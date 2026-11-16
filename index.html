@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach Fahmy | Personal Training</title>
+<meta name="description" content="Personal training and corrective exercise programs with Coach Fahmy. Assess, correct, and build strength that lasts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1116; --surface: #161b22; --line: #262d38;
+    --text: #e8ecf1; --muted: #9aa4b2; --accent: #f5b301; --accent-ink: #111;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; letter-spacing: .02em; line-height: 1.05; margin: 0 0 .5em; }
+  h1 { font-size: clamp(2.6rem, 7vw, 5rem); font-weight: 800; }
+  h2 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 800; }
+  h3 { font-size: 1.5rem; font-weight: 600; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  section { padding: 80px 0; border-top: 1px solid var(--line); }
+  .eyebrow { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; }
+  .muted { color: var(--muted); }
+  .btn { display: inline-block; padding: 14px 26px; border-radius: 6px; font-weight: 600; text-decoration: none; border: 2px solid var(--accent); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-ghost { color: var(--accent); }
+  .btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* nav */
+  header { position: sticky; top: 0; z-index: 10; background: rgba(14,17,22,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-family: "Barlow Condensed"; font-weight: 800; font-size: 1.5rem; text-decoration: none; text-transform: uppercase; }
+  .logo span { color: var(--accent); }
+  nav a { margin-left: 22px; text-decoration: none; color: var(--muted); font-weight: 500; }
+  nav a:hover { color: var(--text); }
+  @media (max-width: 720px) { nav a:not(.btn) { display: none; } }
+
+  /* hero */
+  .hero { padding: 110px 0 90px; border-top: 0; background: radial-gradient(1000px 500px at 85% 0%, rgba(245,179,1,.14), transparent 60%); }
+  .hero p { font-size: 1.2rem; max-width: 620px; }
+  .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-top: 56px; }
+  .stat b { display: block; font-family: "Barlow Condensed"; font-size: 2.4rem; color: var(--accent); }
+
+  /* about */
+  .about { display: grid; grid-template-columns: 1fr 1.3fr; gap: 48px; align-items: center; }
+  .portrait { aspect-ratio: 4/5; border-radius: 12px; background: linear-gradient(160deg, #222a35, #11151b); border: 1px solid var(--line); display: grid; place-items: center; color: var(--muted); overflow: hidden; }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .ticks { list-style: none; padding: 0; }
+  .ticks li { padding-left: 28px; position: relative; margin: 8px 0; }
+  .ticks li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  @media (max-width: 820px) { .about { grid-template-columns: 1fr; } .portrait { max-width: 360px; } }
+
+  /* method */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 32px; }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 24px; }
+  .step .n { font-family: "Barlow Condensed"; font-size: 2.2rem; color: var(--accent); font-weight: 800; }
+
+  /* courses */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0; }
+  .filters button { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font: inherit; cursor: pointer; }
+  .filters button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 26px; display: flex; flex-direction: column; }
+  .card.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .card .tag { align-self: flex-start; font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; background: #222a35; color: var(--muted); padding: 4px 10px; border-radius: 4px; margin-bottom: 14px; }
+  .card.featured .tag { background: var(--accent); color: var(--accent-ink); }
+  .card .meta { color: var(--muted); font-size: .9rem; margin-bottom: 10px; }
+  .card ul { padding-left: 18px; color: var(--muted); margin: 8px 0 20px; }
+  .card .price { font-family: "Barlow Condensed"; font-size: 2.2rem; font-weight: 800; margin-top: auto; }
+  .card .price small { font-family: Inter; font-size: .9rem; font-weight: 400; color: var(--muted); }
+  .card .btn { text-align: center; margin-top: 14px; }
+
+  /* faq */
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 22px; margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); margin: 12px 0 0; }
+
+  /* contact */
+  .contact { text-align: center; background: radial-gradient(800px 400px at 50% 100%, rgba(245,179,1,.12), transparent 60%); }
+  .contact .ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+  form { max-width: 760px; margin: 32px auto 0; text-align: left; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 620px) { .row { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 500; margin: 14px 0 6px; font-size: .95rem; }
+  input, select, textarea { width: 100%; padding: 12px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+  input[type=checkbox], input[type=radio] { width: auto; accent-color: var(--accent); margin-right: 8px; }
+  fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 6px 18px 18px; margin: 18px 0 0; }
+  legend { font-family: "Barlow Condensed"; text-transform: uppercase; font-size: 1.2rem; padding: 0 6px; color: var(--accent); }
+  .checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px 16px; }
+  .checks label { font-weight: 400; margin: 6px 0; color: var(--muted); display: flex; align-items: flex-start; }
+  form details { background: var(--surface); margin-top: 24px; }
+  form details summary { color: var(--accent); }
+  .note { font-size: .85rem; color: var(--muted); }
+  footer { padding: 28px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#">Coach <span>Fahmy</span></a>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#method">Method</a>
+      <a href="#courses">Programs</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary" href="#contact" style="padding:8px 16px">Book Now</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Personal Training · Corrective Exercise</div>
+      <h1>Move better.<br>Train harder.<br>Hurt less.</h1>
+      <p class="muted">One-on-one coaching with Coach Fahmy. We assess how you move, correct what's holding you back, then build strength that lasts.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#courses">See Programs</a>
+        <a class="btn btn-ghost" href="#contact">Free Assessment</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>1:1</b><span class="muted">Personal coaching</span></div>
+        <div class="stat"><b>4-Step</b><span class="muted">Corrective method</span></div>
+        <div class="stat"><b>Online</b><span class="muted">& in-person options</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap about">
+      <!-- Replace with a real photo: <img src="fahmy.jpg" alt="Coach Fahmy coaching a client"> -->
+      <div class="portrait" role="img" aria-label="Photo of Coach Fahmy">Photo coming soon</div>
+      <div>
+        <div class="eyebrow">Meet your coach</div>
+        <h2>Coach Fahmy</h2>
+        <p>Coach Fahmy is a personal trainer focused on corrective exercise and movement quality. His approach is simple: find the root cause of pain, poor posture, or plateaus, fix it, and then progress you safely toward your goals.</p>
+        <p class="muted">Whether you sit at a desk all day, are coming back from an injury, or want to perform at your best, every program starts with a full posture and movement assessment, so your training is built for your body.</p>
+        <ul class="ticks">
+          <li>Posture, movement & mobility assessments</li>
+          <li>Programs tailored to muscle imbalances and compensations</li>
+          <li>Strength, fat loss & athletic performance coaching</li>
+          <li>Progress tracking with regular re-assessments</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="wrap">
+      <div class="eyebrow">The method</div>
+      <h2>Corrective first, then stronger</h2>
+      <p class="muted">Every session follows a proven corrective exercise sequence before load is added.</p>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Release</h3><p class="muted">Foam rolling and soft-tissue work to calm overactive muscles.</p></div>
+        <div class="step"><div class="n">02</div><h3>Lengthen</h3><p class="muted">Targeted stretching to restore range of motion.</p></div>
+        <div class="step"><div class="n">03</div><h3>Activate</h3><p class="muted">Wake up underactive muscles that should be doing the work.</p></div>
+        <div class="step"><div class="n">04</div><h3>Integrate</h3><p class="muted">Full-body movements that lock in the new pattern under load.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="courses">
+    <div class="wrap">
+      <div class="eyebrow">Programs & packages</div>
+      <h2>Choose your program</h2>
+      <div class="filters" id="filters" role="group" aria-label="Filter programs"></div>
+      <div class="grid" id="course-grid"></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="eyebrow">FAQ</div>
+      <h2>Questions</h2>
+      <details><summary>Do I need any experience?</summary><p>No. Every program starts with an assessment and is scaled to your current level.</p></details>
+      <details><summary>What happens in the free assessment?</summary><p>A 30-minute check of your posture, movement and mobility, plus a chat about your goals. You leave with clear next steps, no obligation.</p></details>
+      <details><summary>Can I train online?</summary><p>Yes. Online clients get video sessions, a training app plan and weekly check-ins.</p></details>
+      <details><summary>I have pain or a past injury. Can you help?</summary><p>Corrective exercise is built for this. If anything needs medical attention, we'll refer you to a doctor or physiotherapist first.</p></details>
+      <details><summary>How do I pay?</summary><p>Contact us to book. Packages are paid up front; monthly plans are billed each month.</p></details>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="eyebrow">Get started</div>
+      <h2>Contact me</h2>
+      <p class="muted">Tell Coach Fahmy your goals and pick a program. He'll get back to you within 24 hours.</p>
+
+      <form id="contact-form">
+        <div class="row">
+          <div><label for="f-name">Name *</label><input id="f-name" name="Name" required autocomplete="name"></div>
+          <div><label for="f-phone">Phone / WhatsApp *</label><input id="f-phone" name="Phone" type="tel" required autocomplete="tel"></div>
+        </div>
+        <div class="row">
+          <div><label for="f-email">Email</label><input id="f-email" name="Email" type="email" autocomplete="email"></div>
+          <div><label for="f-program">Program</label><select id="f-program" name="Program"><option value="">Not sure yet</option></select></div>
+        </div>
+        <div class="row">
+          <div><label for="f-mode">Training preference</label>
+            <select id="f-mode" name="Preference"><option value="">No preference</option><option>In person</option><option>Online</option></select></div>
+          <div><label for="f-time">Best time to contact</label><input id="f-time" name="Best time" placeholder="e.g. weekdays after 5pm"></div>
+        </div>
+        <label for="f-msg">Message</label>
+        <textarea id="f-msg" name="Message" rows="4" placeholder="Your goals, questions, anything I should know"></textarea>
+
+        <details id="assessment">
+          <summary>Add pre-assessment questionnaire (optional, ~5 min)</summary>
+          <p class="note">Filling this in saves time at your first session. Your posture, movement and mobility tests are done in person.</p>
+
+          <fieldset>
+            <legend>About you</legend>
+            <div class="row">
+              <div><label for="a-age">Age</label><input id="a-age" name="Age" type="number" min="10" max="100"></div>
+              <div><label for="a-gender">Gender</label><select id="a-gender" name="Gender"><option value="">Prefer not to say</option><option>Male</option><option>Female</option></select></div>
+            </div>
+            <div class="row">
+              <div><label for="a-height">Height</label><input id="a-height" name="Height" placeholder="cm"></div>
+              <div><label for="a-weight">Weight</label><input id="a-weight" name="Weight" placeholder="kg"></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Health</legend>
+            <p class="note">Tick any that apply.</p>
+            <div class="checks" id="health-checks"></div>
+            <label for="a-health">Details (medication, conditions)</label><textarea id="a-health" name="Health details" rows="2"></textarea>
+          </fieldset>
+
+          <fieldset>
+            <legend>Injuries & pain</legend>
+            <label for="a-inj">Past injuries or surgeries (body part, year)</label><textarea id="a-inj" name="Injuries / surgery" rows="2"></textarea>
+            <div class="row">
+              <div><label for="a-pain">Where do you have pain now?</label><input id="a-pain" name="Pain location" placeholder="e.g. lower back, right knee"></div>
+              <div><label for="a-painlvl">Pain level during activity (0–10)</label><input id="a-painlvl" name="Pain level (0-10)" type="number" min="0" max="10"></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Lifestyle</legend>
+            <div class="row">
+              <div><label for="a-job">Occupation / daily activity</label><input id="a-job" name="Occupation"></div>
+              <div><label for="a-sit">Hours sitting per day</label><input id="a-sit" name="Hours sitting/day" type="number" min="0" max="24"></div>
+            </div>
+            <div class="row">
+              <div><label for="a-sleep">Average sleep (hours)</label><input id="a-sleep" name="Sleep (hours)" type="number" min="0" max="24"></div>
+              <div><label for="a-stress">Stress level (1–10)</label><input id="a-stress" name="Stress (1-10)" type="number" min="1" max="10"></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Experience</legend>
+            <div class="row">
+              <div><label for="a-act">Current activity level</label><select id="a-act" name="Activity level"><option value=""></option><option>Sedentary</option><option>Light</option><option>Moderate</option><option>Active</option></select></div>
+              <div><label for="a-exp">Experience level</label><select id="a-exp" name="Experience"><option value=""></option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+            </div>
+            <div class="row">
+              <div><label for="a-days">Workouts per week now</label><input id="a-days" name="Workouts/week" type="number" min="0" max="14"></div>
+              <div><label for="a-access">Access to</label><select id="a-access" name="Access to"><option value=""></option><option>Gym</option><option>Home equipment</option><option>Outdoors</option></select></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Goals</legend>
+            <div class="checks" id="goal-checks"></div>
+            <label for="a-goal">Specific goal & target date</label><input id="a-goal" name="Specific goal" placeholder="e.g. lose 8 kg by June">
+            <label for="a-why">Why is this important to you?</label><textarea id="a-why" name="Why" rows="2"></textarea>
+          </fieldset>
+
+          <label><input type="checkbox" name="Consent" value="Info is accurate; I agree to take part voluntarily" id="a-consent">I confirm this information is accurate and understand exercise carries some risk.</label>
+        </details>
+
+        <p class="note">Your details go straight to Coach Fahmy via WhatsApp or email. Nothing is stored on this site.</p>
+        <div class="ctas" style="justify-content:flex-start">
+          <button class="btn btn-primary" type="submit" value="wa">Send via WhatsApp</button>
+          <button class="btn btn-ghost" type="submit" value="email" style="background:none">Send via Email</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© <span id="yr"></span> Coach Fahmy · coachfahmy.can-du-ai.com</div>
+</footer>
+
+<script>
+  // To add a program: copy one object below and edit it. Nothing else to change.
+  const COURSES = [
+    { title: "Free Movement Assessment", category: "Assessment", duration: "30 min", sessions: "1 session",
+      price: "Free", unit: "",
+      points: ["Posture & movement screen", "Mobility check", "Goal-setting & plan recommendation"] },
+    { title: "Corrective Exercise Program", category: "Corrective", duration: "6 weeks", sessions: "12 sessions",
+      price: "$480", unit: "/ program", featured: true,
+      points: ["Full posture, movement & mobility assessment", "Release, lengthen, activate, integrate", "Fix imbalances & compensations", "Home routine between sessions"] },
+    { title: "Back & Posture Fix", category: "Corrective", duration: "4 weeks", sessions: "8 sessions",
+      price: "$320", unit: "/ program",
+      points: ["For desk workers & back/neck tightness", "Upper-body & hip alignment work", "Daily 10-minute routine"] },
+    { title: "Personal Training – 10 Pack", category: "Personal Training", duration: "60 min each", sessions: "10 sessions",
+      price: "$450", unit: "/ pack",
+      points: ["1:1 strength & conditioning", "Corrective warm-up every session", "Valid for 3 months"] },
+    { title: "Fat Loss Transformation", category: "Personal Training", duration: "12 weeks", sessions: "24 sessions",
+      price: "$950", unit: "/ program",
+      points: ["Training plan + nutrition guidance", "Monthly body measurements", "Weekly check-ins"] },
+    { title: "Online Coaching", category: "Online", duration: "Monthly", sessions: "Weekly check-in",
+      price: "$120", unit: "/ month",
+      points: ["Custom program in an app", "Video form reviews", "Chat support"] },
+    { title: "Athletic Performance", category: "Performance", duration: "8 weeks", sessions: "16 sessions",
+      price: "$720", unit: "/ program",
+      points: ["Speed, power & agility", "Injury-risk reduction", "Sport-specific programming"] },
+  ];
+
+  const grid = document.getElementById("course-grid");
+  const filters = document.getElementById("filters");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function render(cat) {
+    grid.innerHTML = COURSES.filter(c => cat === "All" || c.category === cat).map(c => `
+      <article class="card${c.featured ? " featured" : ""}">
+        <span class="tag">${c.featured ? "Most popular" : esc(c.category)}</span>
+        <h3>${esc(c.title)}</h3>
+        <div class="meta">${esc(c.duration)} · ${esc(c.sessions)}</div>
+        <ul>${c.points.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+        <div class="price">${esc(c.price)} <small>${esc(c.unit)}</small></div>
+        <a class="btn ${c.featured ? "btn-primary" : "btn-ghost"}" href="#contact" data-course="${esc(c.title)}">Book this</a>
+      </article>`).join("");
+    filters.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.textContent === cat));
+  }
+
+  ["All", ...new Set(COURSES.map(c => c.category))].forEach(cat => {
+    const b = document.createElement("button");
+    b.textContent = cat;
+    b.onclick = () => render(cat);
+    filters.appendChild(b);
+  });
+
+  // TODO: put real contact details here (WhatsApp: country code + number, digits only)
+  const WHATSAPP = "0000000000";
+  const EMAIL = "coach@can-du-ai.com";
+
+  const form = document.getElementById("contact-form");
+  const programSel = document.getElementById("f-program");
+  COURSES.forEach(c => programSel.add(new Option(c.title)));
+
+  const checks = (id, name, items) => document.getElementById(id).innerHTML = items.map(q =>
+    `<label><input type="checkbox" name="${name}" value="${esc(q)}">${esc(q)}</label>`).join("");
+  checks("health-checks", "Health flags", [
+    "Heart condition", "Chest pain at rest or during activity", "Dizziness, fainting or balance loss",
+    "High blood pressure / cholesterol", "Diabetes / blood sugar issues", "Asthma / breathing problems",
+    "Bone or joint condition", "Taking medication", "Pregnant or postnatal", "Smoke or drink alcohol",
+    "Doctor advised not to exercise"]);
+  checks("goal-checks", "Goals", ["Fat loss", "Muscle gain", "Strength", "Endurance", "Mobility", "General health", "Sport performance"]);
+
+  // "Book this" preselects the program in the form
+  grid.addEventListener("click", e => {
+    if (e.target.dataset.course) programSel.value = e.target.dataset.course;
+  });
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const fields = new Map();
+    for (const [k, v] of new FormData(form)) {
+      if (!v.trim()) continue;
+      // assessment fields only count if the section is open
+      if (!document.getElementById("assessment").open && e.target.querySelector(`#assessment [name="${k}"]`)) continue;
+      fields.set(k, fields.has(k) ? fields.get(k) + ", " + v : v);
+    }
+    const text = "Hi Coach Fahmy, new enquiry from the website:\n\n" +
+      [...fields].map(([k, v]) => `${k}: ${v}`).join("\n");
+    // shortcut: no backend, so the message opens in the visitor's WhatsApp/email app; add a form service (e.g. Formspree) if you need submissions stored
+    if (e.submitter && e.submitter.value === "email")
+      location.href = `mailto:${EMAIL}?subject=${encodeURIComponent("Website enquiry: " + fields.get("Name"))}&body=${encodeURIComponent(text)}`;
+    else
+      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`, "_blank");
+  });
+
+  render("All");
+  document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
