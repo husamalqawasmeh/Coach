@@ -387,8 +387,11 @@
   // Background beat, synthesized with Web Audio (no audio file). Browsers block autoplay, so it starts on tap.
   const musicBtn = document.getElementById("music");
   let ac, master, timer, step = 0, nextT = 0;
-  const STEP = 60 / 100 / 4;                       // 100 BPM, 16th notes
-  const BASS = [55, 55, 65.41, 49];                // A1 A1 C2 G1, one per bar
+  const STEP = 60 / 128 / 4;                       // 128 BPM, 16th notes
+  const ROOT = [55, 43.65, 65.41, 49];             // Am F C G, one chord per bar
+  const CHORD = [[220, 261.63, 329.63], [174.61, 220, 261.63], [261.63, 329.63, 392], [196, 246.94, 293.66]];
+  const LEAD = [0, 3, 7, 10, 14];                  // syncopated melody steps
+  let nbuf;
   // route node through a decaying gain to master; src is the node to start/stop (defaults to node)
   function env(node, t, peak, dur, src = node) {
     const g = ac.createGain();
@@ -399,32 +402,57 @@
   }
   function kick(t) {
     const o = ac.createOscillator();
-    o.frequency.setValueAtTime(150, t);
-    o.frequency.exponentialRampToValueAtTime(40, t + 0.15);
-    env(o, t, 1, 0.3);
+    o.frequency.setValueAtTime(160, t);
+    o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+    env(o, t, 1, 0.28);
   }
-  function noise(t, cutoff, peak, dur) {
-    const b = ac.createBuffer(1, ac.sampleRate * dur, ac.sampleRate), d = b.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    const s = ac.createBufferSource(); s.buffer = b;
-    const f = ac.createBiquadFilter(); f.type = "highpass"; f.frequency.value = cutoff;
+  function tone(t, freq, type, dur, peak, cutoff) {
+    const o = ac.createOscillator(); o.type = type; o.frequency.value = freq;
+    const f = ac.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = cutoff;
+    o.connect(f); env(f, t, peak, dur, o);
+  }
+  function noise(t, cutoff, peak, dur, type = "highpass") {
+    if (!nbuf) {
+      nbuf = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
+      const d = nbuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const s = ac.createBufferSource(); s.buffer = nbuf;
+    const f = ac.createBiquadFilter(); f.type = type; f.frequency.value = cutoff;
     s.connect(f); env(f, t, peak, dur, s);
   }
-  function bass(t, freq) {
-    const o = ac.createOscillator(); o.type = "sawtooth"; o.frequency.value = freq;
-    const f = ac.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 350;
-    const g = ac.createGain(); g.gain.setValueAtTime(0.35, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-    o.connect(f).connect(g).connect(master); o.start(t); o.stop(t + 0.25);
-  }
+  const clap = t => noise(t, 1200, 0.6, 0.12, "bandpass");
+  // 32-bar song that changes every 8 bars: build -> drop -> groove -> break, with a drum fill every 4 bars
   function play(s, t) {
-    const i = s % 16;
-    if ([0, 8, 10].includes(i)) kick(t);
-    if (i === 4 || i === 12) noise(t, 1500, 0.5, 0.18);    // snare
-    if (i % 2 === 0) noise(t, 7000, 0.15, 0.05);           // hi-hat
-    if ([0, 3, 6, 8, 11, 14].includes(i)) bass(t, BASS[Math.floor(s / 16) % 4]);
+    const i = s % 16, bar = Math.floor(s / 16), sec = Math.floor(bar / 8) % 4, c = bar % 4;
+    if (sec === 0) {                                          // BUILD: filter opens bar by bar
+      if (i % 4 === 0) kick(t);
+      noise(t, 8000, 0.06 + 0.12 * (bar % 8) / 8, 0.03);
+      tone(t, CHORD[c][i % 3] * 2, "sawtooth", 0.1, 0.12, 600 + (bar % 8) * 400);
+    } else if (sec === 1) {                                   // DROP: four-on-the-floor, rolling bass
+      if (i % 4 === 0) kick(t);
+      if (i === 4 || i === 12) clap(t);
+      i % 4 === 2 ? noise(t, 6000, 0.25, 0.15) : noise(t, 9000, 0.06, 0.03);
+      if (i % 4 !== 0) tone(t, ROOT[c] * 2, "sawtooth", 0.12, 0.3, 500);
+      if (i % 2 === 0) tone(t, CHORD[c][(i / 2) % 3] * 2, "square", 0.12, 0.08, 2500);
+    } else if (sec === 2) {                                   // GROOVE: broken kick, syncopated lead
+      if ([0, 3, 6, 10].includes(i)) kick(t);
+      if (i === 4 || i === 12) clap(t);
+      if (i % 2 === 0) noise(t, 8000, i % 4 === 2 ? 0.15 : 0.07, 0.04);
+      if ([0, 3, 6, 8, 11, 14].includes(i)) tone(t, ROOT[c] * 2, "sawtooth", 0.2, 0.32, 450);
+      const n = LEAD.indexOf(i);
+      if (n >= 0) tone(t, CHORD[c][n % 3] * (n > 2 ? 4 : 2), "square", 0.18, 0.09, 3000);
+    } else {                                                  // BREAK: chords, then a rising snare roll
+      if (i === 0) tone(t, ROOT[c] * 2, "sawtooth", 1.6, 0.35, 300);
+      if (i % 4 === 0) tone(t, CHORD[c][(i / 4) % 3], "triangle", 0.5, 0.4, 2000);
+      if (i % 2 === 0) noise(t, 9000, 0.05, 0.03);
+      if (bar % 8 === 6 && i % 2 === 0) noise(t, 1500, 0.2 + 0.3 * i / 16, 0.08, "bandpass");
+      if (bar % 8 === 7) noise(t, 1500, 0.3 + 0.4 * i / 16, 0.08, "bandpass");
+    }
+    if (sec !== 3 && bar % 4 === 3 && i >= 12) noise(t, 1500, 0.45, 0.1, "bandpass");  // fill
   }
   function tick() {
-    while (nextT < ac.currentTime + 0.12) { play(step, nextT); nextT += STEP; step = (step + 1) % 64; }
+    while (nextT < ac.currentTime + 0.12) { play(step, nextT); nextT += STEP; step = (step + 1) % 512; }
   }
   let userMuted = false;
   function setMusic(on) {
